@@ -1,0 +1,102 @@
+{
+  "name": "Registro de testes A/B (cashback) - Google Sheets",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "registrar-teste-ab",
+        "responseMode": "responseNode",
+        "options": {}
+      },
+      "id": "a1f2b3c4-0001-4a01-9d01-registroab001",
+      "name": "Webhook (analisar.py)",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [0, 0],
+      "webhookId": "registrar-teste-ab"
+    },
+    {
+      "parameters": {
+        "jsCode": "// Valida o payload enviado pelo analisar.py e monta a linha no formato da planilha.\n// Se faltar campo essencial, o erro aparece na execução e a resposta HTTP indica o problema.\nconst b = $input.first().json.body ?? $input.first().json;\n\nconst obrigatorios = ['nome_teste', 'parceiro', 'descricao', 'resultado', 'decisao'];\nconst faltando = obrigatorios.filter((c) => !b[c]);\nif (faltando.length) {\n  throw new Error('Payload incompleto, faltou: ' + faltando.join(', '));\n}\n\nconst grupos = b.grupos\n  ? Object.entries(b.grupos).map(([g, v]) => `${g}: ${String(v).replace('.', ',')}%`).join('; ')\n  : '';\n\nreturn [{\n  json: {\n    registrado_em: b.gerado_em ?? new Date().toISOString(),\n    nome_teste: b.nome_teste,\n    parceiro: b.parceiro,\n    periodo: b.periodo ?? '',\n    janela_valida: b.janela_valida ?? '',\n    dias_validos: b.dias_validos ?? '',\n    grupos_cashback: grupos,\n    descricao: b.descricao,\n    metrica_primaria: b.metrica_primaria ?? '',\n    resultado: b.resultado,\n    decisao: b.decisao,\n    confianca: b.confianca ?? '',\n    p_valor: typeof b.p_valor === 'number' && b.p_valor < 0.001 ? '<0,001' : (b.p_valor ?? ''),\n    alertas: Array.isArray(b.alertas) ? (b.alertas.join('; ') || 'nenhum') : (b.alertas ?? 'nenhum'),\n    relatorio: b.relatorio ?? ''\n  }\n}];"
+      },
+      "id": "a1f2b3c4-0002-4a02-9d02-registroab002",
+      "name": "Validar e montar linha",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [220, 0]
+    },
+    {
+      "parameters": {
+        "operation": "appendOrUpdate",
+        "documentId": {
+          "__rl": true,
+          "mode": "id",
+          "value": "COLE_AQUI_O_ID_DA_SUA_PLANILHA"
+        },
+        "sheetName": {
+          "__rl": true,
+          "mode": "name",
+          "value": "acompanhamento"
+        },
+        "columns": {
+          "mappingMode": "autoMapInputData",
+          "matchingColumns": ["nome_teste"],
+          "schema": []
+        },
+        "options": {}
+      },
+      "id": "a1f2b3c4-0003-4a03-9d03-registroab003",
+      "name": "Google Sheets (append/update)",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.5,
+      "position": [440, 0]
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={{ JSON.stringify({ ok: true, teste: $json.nome_teste, msg: 'linha registrada na planilha de acompanhamento' }) }}",
+        "options": {}
+      },
+      "id": "a1f2b3c4-0004-4a04-9d04-registroab004",
+      "name": "Responder ao script",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.1,
+      "position": [660, 0]
+    },
+    {
+      "parameters": {
+        "resource": "message",
+        "operation": "send",
+        "sendTo": "time-operacoes@exemplo.com",
+        "subject": "=Teste A/B registrado: {{ $json.nome_teste }}",
+        "emailType": "text",
+        "message": "=Decisão: {{ $json.decisao }} (confiança {{ $json.confianca }})\n\nResultado: {{ $json.resultado }}\n\nAlertas: {{ $json.alertas }}\n\nRelatório completo no repositório: {{ $json.relatorio }}",
+        "options": {}
+      },
+      "id": "a1f2b3c4-0005-4a05-9d05-registroab005",
+      "name": "Avisar o time (opcional)",
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.1,
+      "position": [660, 180],
+      "disabled": true
+    }
+  ],
+  "connections": {
+    "Webhook (analisar.py)": {
+      "main": [[{ "node": "Validar e montar linha", "type": "main", "index": 0 }]]
+    },
+    "Validar e montar linha": {
+      "main": [[{ "node": "Google Sheets (append/update)", "type": "main", "index": 0 }]]
+    },
+    "Google Sheets (append/update)": {
+      "main": [
+        [
+          { "node": "Responder ao script", "type": "main", "index": 0 },
+          { "node": "Avisar o time (opcional)", "type": "main", "index": 0 }
+        ]
+      ]
+    }
+  },
+  "settings": { "executionOrder": "v1" },
+  "pinData": {}
+}
