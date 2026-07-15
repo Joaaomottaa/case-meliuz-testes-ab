@@ -1,0 +1,24 @@
+{
+  "nome_teste": "Cashback Parceiro B (05–06/2011)",
+  "parceiro": "Parceiro B",
+  "arquivo": "dataset_02_parceiroB.csv",
+  "periodo": "01/05/2011 a 30/06/2011",
+  "janela_valida": "01/05/2011 a 30/06/2011",
+  "dias_validos": 61,
+  "grupos": {
+    "Grupo 1": 4.0,
+    "Grupo 2": 6.0,
+    "Grupo 3": 9.0
+  },
+  "metrica_primaria": "margem líquida diária (comissão − cashback)",
+  "descricao": "Teste de % de cashback do Parceiro B com 3 variantes (Grupo 1: 4,0%, Grupo 2: 6,0%, Grupo 3: 9,0%), 01/05/2011 a 30/06/2011. Janela válida: 01/05/2011 a 30/06/2011 (61 dias).",
+  "resultado": "Grupo 1 venceu em margem líquida (R$ 4.698/dia vs R$ 2.347/dia do Grupo 2; p<0,001)",
+  "decisao": "ESCALAR Grupo 1 (4,0% de cashback) para 100% do tráfego",
+  "confianca": "média",
+  "p_valor": 0.0,
+  "alertas": [
+    "[atencao] Volumes desiguais entre grupos",
+    "[atencao] Relação cashback × compradores invertida"
+  ],
+  "gerado_em": "2026-07-14T23:54:48"
+}
