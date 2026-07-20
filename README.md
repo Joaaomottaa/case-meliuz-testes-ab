@@ -7,7 +7,7 @@ Qualquer CSV no schema do case entra, e sai: relatório apresentável pra gestor
 decisão com justificativa e teste de significância, e a linha registrada na planilha de
 acompanhamento. Os 3 datasets fornecidos rodam sem mudar uma linha de código — só apontando o arquivo.
 
-> 🔗 **Planilha de acompanhamento (Google Sheets):** COLE_AQUI_O_LINK_DA_PLANILHA
+> 🔗 **Planilha de acompanhamento (Google Sheets):** https://docs.google.com/spreadsheets/d/1xun0oWOnNac9JqT6awelUQkjhfkMVxu6awCpVVI5gWk/edit?usp=sharing
 >
 > Versão mínima em CSV: [`planilha/acompanhamento_testes.csv`](planilha/acompanhamento_testes.csv)
 
