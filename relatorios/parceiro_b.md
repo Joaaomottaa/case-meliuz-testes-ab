@@ -38,4 +38,4 @@
 3. Métrica de decisão: margem líquida (comissão − cashback), que é o que sobra pro Méliuz. Compradores e GMV entram como guardrail de crescimento.
 4. Significância: teste de permutação pareado por dia (10 mil permutações) — como os grupos vivem o mesmo calendário, comparar a diferença diária cancela sazonalidade e promoções comuns.
 
-*Relatório gerado automaticamente pelo `analisar.py` em 14/07/2026 23:54. Arquivo de origem: `dataset_02_parceiroB.csv`.*
+*Relatório gerado automaticamente pelo `analisar.py` em 19/07/2026 23:10. Arquivo de origem: `dataset_02_parceiroB.csv`.*
